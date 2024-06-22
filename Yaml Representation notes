@@ -1,0 +1,77 @@
+#Yaml follow even identation so it is users respnsiblity to give right no of spaces for indention
+#if followed one follow the same throughout the file.
+# if i space follow 1
+# If 2 follow 2 space
+# if 3 follow 3 space 
+
+# Yaml basic key value pair 
+name: master
+
+# One block
+
+#Yaml representation of object or dictionary starts.
+app:
+ name: trac-grc
+ tech: .net
+ version: [1.1,2.1,3.1]
+ dummy1: HID Safe
+ dummy2: Java
+ dummy3: [1,2,3]
+#Yaml representation of object or dictionary end.
+
+#Yaml representation of object inside object having object or dictionary or list start.
+ value:
+  value1: 1
+  value2: 2
+  value3: 
+     - 4
+     - 5
+     - 6
+#Yaml representation of object inside object having object or dictionary or list end.
+
+#Yaml representation of multiple line strings their are two methods both are mentioned below.
+# First method by | symbol second method by using > symbol
+ data : >
+  Suryakumar {{ Yadav is a delight }}in press
+  conferences and interviews. As deadly as 
+  he is against all bowlers when batting in the 
+  middle, he is exactly the opposite when interacting 
+  with opponents, broadcasters, journalists and even the fans.
+ data1 : |
+  Suryakumar {{ Yadav is a delight }}in press
+  conferences and interviews. As deadly as 
+  he is against all bowlers when batting in the 
+  middle, he is exactly the opposite when interacting 
+  with opponents, broadcasters, journalists and even the fans.
+
+# One block Ends
+# --- is used to write multiple yaml blocks in same file.
+
+---
+
+# second block starts
+# yaml representation of list inside object.
+newapp:
+ - name: trac-grc
+   tech: .net
+   # list can also be defined in [] if it is primitive datatypes
+   version: [1.1,2.1,3.1]
+ - name: trac-grc
+   tech: .net
+   version: ["One","Two","Three"]
+
+
+   value:
+    value1: 1
+    value2: 2
+    #Another way of representing yaml list
+    value3: 
+       - 4
+       - 5
+       - 6
+#Second Block ends
+ 
+
+
+ 
+
