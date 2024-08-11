@@ -1,24 +1,135 @@
+//http://localhost:16000/job/pipeline%20pull%20check/pipeline-syntax/ for Pipeline syntaxes
+//http://localhost:16000/env-vars.html/ for Jenkins defined pipeline variables.
+
+
+// Variable declaration:
+CODE_CHANGE=true
+
+
 pipeline{
-
-    agent any
-
+    //assuming the slave  node name is Node3
+    agent any 
+    tools{
+        maven 'MAVEN'
+    }
+    environment{
+        VERSION='1.1.0'
+        GITTOKEN=credentials('GITPAT')
+    }
+    parameters{
+        string(name:'VERSION',defaultValue:'',description:'Version to deploy')
+        choice(name:'VERSION',choices:['1.1.0','1.2.0','1.3.0'],description:'version to select')
+        booleanParam(name:'executeTests',defaultValue:true,description:'')
+    }
     stages{
-        stage("build"){
+        stage("Checkout"){
             steps{
-                echo 'building the appliation'
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'GITPAT', url: 'https://github.com/dhaman100/eShopOnWeb.git']])
             }
         }
-        stage("test"){
+        stage("init"){
             steps{
-                echo 'testing the application'
-
+            script{
+                   gv = load "script.groovy"
+            }
             }
         }
-        stage("deploy"){
+        stage("Build"){
+            when{
+                expression{
+                    CODE_CHANGE==true
+                }
+            }
             steps{
-                echo 'deploying the application'
+                echo "Building the Application"
+                // "" interprets the value 
+                //'' does not interpret the value
+                echo "${VERSION}"
+                echo '${VERSION}'
+                withCredentials([
+                    usernamePassword(credentials:'GITPAT',usernameVariable:USER,passwordVariable:PASSWORD)
+                ]){
+                    sh ' ${USER} and $ {PASSWORD}'
 
+                }
+            }
+            post{
+        always{
+            echo "Continuing"
+        }
+        success{
+            echo "Build Succeeded"
+        }
+        failure{
+            echo "Build Faied"
+        }
+            }
+        }
+        stage("Test"){
+            steps{
+                echo "Testing the application"
+            }
+            post{
+        always{
+            echo "Continuing"
+        }
+        success{
+            echo "Test Succeeded"
+        }
+        failure{
+            echo "Test Faied"
+        }
+            }
+        }
+        stage("Deploy"){
+            steps{
+                echo "Deploying the application"
+            }
+            post{
+        always{
+            echo "Continuing"
+        }
+        success{
+            echo "Deploy Succeeded"
+        }
+        failure{
+            echo "Deployment Faied"
+        }
+            }
+        }
+        stage("groovy Build"){
+            steps{
+            script{
+                   gv.buildapp()
+            }
+            }
+        }
+        stage("groovy Test"){
+            steps{
+            script{
+                   gv.testapp()
+            }
+            }
+        }
+        stage("groovy deploy"){
+            steps{
+            script{
+                   gv.deployapp()
+            }
             }
         }
     }
+
+    post{
+        always{
+            echo "All is Well"
+        }
+        success{
+            echo "Pipeline  Succeeded"
+        }
+        failure{
+            echo "Pipeline Failed"
+        }
+    }
 }
+
