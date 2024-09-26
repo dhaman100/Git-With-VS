@@ -8,7 +8,9 @@ CODE_CHANGE=true
 
 pipeline{
     //assuming the slave  node name is Node3
-    agent any 
+    agent any  
+    // To specify the pipeline to run in that specific node.
+    agent { label 'Node3' }
     tools{
         maven 'MAVEN'
     }
@@ -23,6 +25,8 @@ pipeline{
     }
     stages{
         stage("Checkout"){
+            // To run the job in particular node.
+            agent { label 'Node3' }
             steps{
                 checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'GITPAT', url: 'https://github.com/dhaman100/eShopOnWeb.git']])
             }
